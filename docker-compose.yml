@@ -1,0 +1,65 @@
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"  # Giao diện quản lý
+
+  product:
+    build: ./product
+    container_name: product_service
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGODB_PRODUCT_URI=mongodb://localhost:27017/ProductService
+    depends_on:
+      - mongo
+      - rabbitmq
+
+  order:
+    build: ./order
+    container_name: order_service
+    ports:
+      - "3002:3002"
+    environment:
+      - MONGODB_ORDER_URI=mongodb://localhost:27017/OrderService
+    depends_on:
+      - mongo
+      - rabbitmq
+
+  auth:
+    build: ./auth
+    container_name: auth_service
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_AUTH_URI=mongodb://localhost:27017/AuthService
+    depends_on:
+      - mongo
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api_gateway
+    ports:
+      - "3003:3003"
+    environment:
+      - PRODUCT_SERVICE_URL=http://product:3001
+      - ORDER_SERVICE_URL=http://order:3002
+      - AUTH_SERVICE_URL=http://localhost:3000
+    depends_on:
+      - product
+      - order
+      - auth
+
+volumes:
+  mongo-data:
