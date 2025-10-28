@@ -22,9 +22,9 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "MONGODB_AUTH_URI=mongodb://localhost:27017/authdb" >> auth/.env
+          echo "MONGODB_AUTH_URI=mongodb://localhost:27017/AuthService" >> auth/.env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> auth/.env
-          echo "MONGODB_PRODUCT_URI=mongodb://localhost:27017/productdb" >> product/.env
+          echo "MONGODB_PRODUCT_URI=mongodb://localhost:27017/ProductService" >> product/.env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> product/.env
           echo "LOGIN_TEST_USER=${{ secrets.LOGIN_TEST_USER }}" >> product/.env
           echo "LOGIN_TEST_PASSWORD=${{ secrets.LOGIN_TEST_PASSWORD }}" >> product/.env
