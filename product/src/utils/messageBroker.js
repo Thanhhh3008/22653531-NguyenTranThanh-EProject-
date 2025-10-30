@@ -1,5 +1,7 @@
 const amqp = require("amqplib");
 
+
+const rabbitmqUrl = process.env.RABBITMQ_URI || 'amqp://rabbitmq';
 class MessageBroker {
   constructor() {
     this.channel = null;
@@ -10,7 +12,7 @@ class MessageBroker {
 
     setTimeout(async () => {
       try {
-        const connection = await amqp.connect("amqp://127.0.0.1:5672");
+        const connection = await amqp.connect(rabbitmqUrl);
         this.channel = await connection.createChannel();
         await this.channel.assertQueue("products");
         console.log("RabbitMQ connected");

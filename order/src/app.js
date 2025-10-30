@@ -29,14 +29,14 @@ class App {
   
     setTimeout(async () => {
       try {
-        const amqpServer = "amqp://127.0.0.1:5672";
+        const amqpServer = "amqp://rabbitmq";
         const connection = await amqp.connect(amqpServer);
         console.log("Connected to RabbitMQ");
         const channel = await connection.createChannel();
         await channel.assertQueue("orders");
   
         channel.consume("orders", async (data) => {
-          // Consume messages from the order queue on buy
+          
           console.log("Consuming ORDER service");
           const { products, username, orderId } = JSON.parse(data.content);
   

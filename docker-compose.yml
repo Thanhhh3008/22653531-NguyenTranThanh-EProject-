@@ -1,3 +1,4 @@
+version: "3.9"
 
 services:
   mongo:
@@ -13,7 +14,12 @@ services:
     container_name: rabbitmq
     ports:
       - "5672:5672"
-      - "15672:15672"  # Giao diện quản lý
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   product:
     build: ./product
@@ -21,10 +27,12 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - MONGODB_PRODUCT_URI=mongodb://localhost:27017/ProductService
+      - MONGODB_PRODUCT_URI=mongodb://host.docker.internal:27017/ProductService
+      - RABBITMQ_URI=amqp://rabbitmq
+      - RABBITMQ_QUEUE=product
     depends_on:
-      - mongo
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   order:
     build: ./order
@@ -32,10 +40,12 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - MONGODB_ORDER_URI=mongodb://localhost:27017/OrderService
+      - MONGODB_ORDER_URI=mongodb://host.docker.internal:27017/OrderService
+      - RABBITMQ_URI=amqp://rabbitmq
+      - RABBITMQ_QUEUE=product
     depends_on:
-      - mongo
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   auth:
     build: ./auth
@@ -43,9 +53,12 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MONGODB_AUTH_URI=mongodb://localhost:27017/AuthService
+      - MONGODB_AUTH_URI=mongodb://host.docker.internal:27017/AuthService
+      - RABBITMQ_URI=amqp://rabbitmq
+      - RABBITMQ_QUEUE=product
     depends_on:
-      - mongo
+      rabbitmq:
+        condition: service_healthy
 
   api-gateway:
     build: ./api-gateway
@@ -55,11 +68,12 @@ services:
     environment:
       - PRODUCT_SERVICE_URL=http://product:3001
       - ORDER_SERVICE_URL=http://order:3002
-      - AUTH_SERVICE_URL=http://localhost:3000
+      - AUTH_SERVICE_URL=http://auth:3000
     depends_on:
       - product
       - order
       - auth
+      - rabbitmq
 
 volumes:
   mongo-data:
