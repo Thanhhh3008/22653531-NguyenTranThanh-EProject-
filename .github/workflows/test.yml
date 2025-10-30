@@ -1,4 +1,5 @@
-name: CI
+name: CI Test Services
+
 on: [push, pull_request]
 
 jobs:
@@ -17,33 +18,45 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3.2.0
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Create .env file
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Create .env files
         run: |
           echo "MONGODB_AUTH_URI=mongodb://localhost:27017/AuthService" >> auth/.env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> auth/.env
+
           echo "MONGODB_PRODUCT_URI=mongodb://localhost:27017/ProductService" >> product/.env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> product/.env
           echo "LOGIN_TEST_USER=${{ secrets.LOGIN_TEST_USER }}" >> product/.env
           echo "LOGIN_TEST_PASSWORD=${{ secrets.LOGIN_TEST_PASSWORD }}" >> product/.env
 
-      - name: Install dependencies
+          echo "MONGODB_ORDER_URI=mongodb://localhost:27017/OrderService" >> order/.env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> order/.env
+
+      - name: Install dependencies for all services
         run: |
           cd auth && npm ci
           cd ../product && npm ci
+          cd ../order && npm ci
+          cd ../api-gateway && npm ci
           cd ..
 
-      - name: Run tests for auth
+      - name: Start Auth service
+        working-directory: ./auth
         run: |
-          cd auth
-          npm test
+          nohup npm start &
+          sleep 8
 
-      - name: Run tests for product
-        run: |
-          cd auth &&
-          npm start &
-          sleep 5 &&
-          cd ../product &&
-          npm test
+      - name: Run Product tests
+        working-directory: ./product
+        run: npm test
+
+      - name: Run Order tests
+        working-directory: ./order
+        run: npm test
