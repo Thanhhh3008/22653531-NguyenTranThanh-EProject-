@@ -112,17 +112,7 @@ class ProductController {
 
  
 
-  async getProductById(req, res, next){
-    try {
-      const id= req.params.id;
-      const product= await Product.findById(id)
-     res.status(200).json(product)
-
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({mess:"lỗi server"})
-    }
-  }
+ 
 }
 
 module.exports = ProductController;
