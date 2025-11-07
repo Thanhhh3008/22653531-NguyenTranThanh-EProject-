@@ -18,7 +18,7 @@ describe("Products", () => {
 
     // Authenticate with the auth microservice to get a token
     const authRes = await chai
-      .request("http://localhost:3000")
+      .request("http://auth:3000")
       .post("/login")
       .send({ username: process.env.LOGIN_TEST_USER, password: process.env.LOGIN_TEST_PASSWORD });
 
