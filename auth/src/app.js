@@ -4,6 +4,7 @@ const config = require("./config");
 const authMiddleware = require("./middlewares/authMiddleware");
 const AuthController = require("./controllers/authController");
 
+
 class App {
   constructor() {
     this.app = express();
@@ -47,5 +48,6 @@ class App {
     console.log("Server stopped");
   }
 }
+
 
 module.exports = App;

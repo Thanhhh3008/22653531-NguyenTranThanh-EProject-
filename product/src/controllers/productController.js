@@ -110,21 +110,19 @@ class ProductController {
     }
   }
 
-  async getProductById(req, res, next) {
-        try {
-            const id = req.params.id;
-            const product = await Product.findById(id);
+ 
 
-            if (!product) {
-                return res.status(404).json({ message: 'Không tìm thấy sản phẩm với ID này' });
-            }
+  async getProductById(req, res, next){
+    try {
+      const id= req.params.id;
+      const product= await Product.findById(id)
+     res.status(200).json(product)
 
-            res.status(200).json(product);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Lỗi khi truy xuất sản phẩm', error: error.message });
-        }
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({mess:"lỗi server"})
     }
+  }
 }
 
 module.exports = ProductController;

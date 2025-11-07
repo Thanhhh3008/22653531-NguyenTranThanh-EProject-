@@ -8,7 +8,7 @@ const productController = new ProductController();
 // router.post("/", isAuthenticated, productController.createProduct);
 // router.post("/buy", isAuthenticated, productController.createOrder);
 // router.get("/", isAuthenticated, productController.getProducts);
-// router.get('/:id', productController.getProductById);
+
 if (process.env.NODE_ENV === "test") {
   router.post("/", productController.createProduct);
   router.post("/buy", productController.createOrder);
@@ -19,6 +19,6 @@ if (process.env.NODE_ENV === "test") {
   router.get("/", isAuthenticated, productController.getProducts);
 }
 
-router.get('/:id', productController.getProductById);
+ router.get('/:id', productController.getProductById);
 
 module.exports = router;
