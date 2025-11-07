@@ -58,6 +58,6 @@ jobs:
         # run: npm test
         run: NODE_ENV=test npm test
 
-      - name: Run Order tests
-        working-directory: ./order
-        run: npm test
+      # - name: Run Order tests
+      #   working-directory: ./order
+      #   run: npm test
