@@ -109,7 +109,18 @@ class ProductController {
       res.status(500).json({ message: "Server error" });
     }
   }
+  async getProductById(req,res,next){
+    try{
+      const id = req.params.id
+      const product=await Product.findById(id);
+      res.status(200).json(product)
 
+    }
+    catch(error){
+      console.error(error)
+      res.status(500).json({message:"looi server"})
+    }
+  }
  
 
  
