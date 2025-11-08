@@ -1,3 +1,4 @@
+22653531-NguyenTranThanh-EProject-
 Hệ thống được xây dựng nhằm mô phỏng một nền tảng thương mại điện tử dạng microservices, trong đó người dùng có thể:
 •	Đăng nhập / xác thực tài khoản.
 •	Xem danh sách sản phẩm.
